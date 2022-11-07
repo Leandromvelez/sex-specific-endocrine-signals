@@ -1,10 +1,10 @@
-setwd('E:/My Drive/lab files/stephanie correa/adipose-hypothalamus crosstalk/pan-tissue estrogen binning')
-load('E:/My Drive/lab files/sex-difference myokine study/github/raw files/GTEx NA included env.RData')
+setwd('')
+load('GTEx NA included env.RData')
 
-deg_table = read.csv('E:/My Drive/lab files/stephanie correa/adipose-hypothalamus crosstalk/hypothalamus DEGs FoverM.csv')
-orths = read.delim('E:/My Drive/Datasets/Human/genome files/ms_human_orthology.txt')
+deg_table = read.csv('hypothalamus DEGs FoverM.csv')
+orths = read.delim('ms_human_orthology.txt')
 sex_annots = read.csv('GTEx Subject IDs with estrogen annots.csv')
-Secreted_proteins <- read.delim("E:/My Drive/lab files/pancreas targeting/GTEx islet enrichments/datasets/uniprot-secreted-filtered-organism__Homo+sapiens+(Human)+[9606]_.tab", header = T, check.names = F)
+Secreted_proteins <- read.delim("uniprot-secreted-filtered-organism__Homo+sapiens+(Human)+[9606]_.tab", header = T, check.names = F)
 
 orth_table =  orths[orths$Common.Organism.Name =='mouse, laboratory',]
 sse2 = orths[orths$Common.Organism.Name =='human',]
@@ -155,12 +155,8 @@ dev.off()
 
 ############################################################
 #run for specific pathways
-setwd('E:/My Drive/lab files/stephanie correa/adipose-hypothalamus crosstalk/pan-tissue estrogen binning/pathway-specific enrichment plots/revised pathway plots')
-pathway_annots = read.delim('E:/My Drive/Datasets/Human/genome files/uniprot-human-genes and goterms mapping.tab')
 
-
-
-
+pathway_annots = read.delim('uniprot-human-genes and goterms mapping.tab')
 path_plots = function(pathway_term_set) {
 #path_term = 'ligand'
 tt2 = pathway_annots[grepl(pathway_term_set, pathway_annots$Gene.ontology..biological.process.),]
@@ -171,9 +167,6 @@ zz1 = na.omit(zz1)
 table(zz1$est_cat)
 zz1$est_cat = factor(zz1$est_cat, levels=c('low_estrogen','high_estrogen'))
 table(zz1$tissue)
-
-#add significance to the graph, scripts adopted from:
-#http://www.sthda.com/english/articles/24-ggpubr-publication-ready-plots/76-add-p-values-and-significance-levels-to-ggplots/
 
 zz1$tissue= gsub('Adipose - Visceral (Omentum)', 'Adipose', zz1$tissue, fixed = T)
 zz1$tissue= gsub('Adipose - Subcutaneous', 'Adipose', zz1$tissue, fixed = T)
@@ -200,9 +193,6 @@ zz1 = na.omit(zz1)
 table(zz1$est_cat)
 zz1$est_cat = factor(zz1$est_cat, levels=c('low_estrogen','high_estrogen'))
 table(zz1$tissue)
-
-#add significance to the graph, scripts adopted from:
-#http://www.sthda.com/english/articles/24-ggpubr-publication-ready-plots/76-add-p-values-and-significance-levels-to-ggplots/
 
 zz1$tissue= gsub('Adipose - Visceral (Omentum)', 'Adipose', zz1$tissue, fixed = T)
 zz1$tissue= gsub('Adipose - Subcutaneous', 'Adipose', zz1$tissue, fixed = T)
