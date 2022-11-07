@@ -1,6 +1,6 @@
-setwd('G:/My Drive/lab files/stephanie correa/adipose-hypothalamus crosstalk/pan-tissue estrogen binning')
+setwd('')
 estrogen_set = read.csv('GSEA estrogen gene set.csv')
-load('G:/My Drive/lab files/sex-difference myokine study/github/raw files/GTEx NA included env.RData')
+load('GTEx NA included env.RData')
 library(dplyr)
 library(reshape2)
 library(pheatmap)
@@ -9,7 +9,7 @@ row.names(working_dataset) = working_dataset$gene_tissue
 working_dataset$gene_tissue=NULL
 working_dataset = as.data.frame(t(working_dataset))
 
-sex_table = read.delim('G:/My Drive/Datasets/Human/GTEx_Analysis_v8_Annotations_SubjectPhenotypesDS.txt')
+sex_table = read.delim('GTEx_Analysis_v8_Annotations_SubjectPhenotypesDS.txt')
 sex_table$GTEx_ID = gsub('GTEX-', '', sex_table$SUBJID)
 sex_table$sexMF = ifelse(sex_table$SEX==1, 'M', 'F')
 table(sex_table$sexMF)
@@ -177,7 +177,7 @@ ind_list$final_expr_cat = ifelse(ind_list$High_expr > ind_list$Low_expr, 'High_e
 female_estro_annots = ind_list
 
 
-sex_table = read.delim('G:/My Drive/lab files/sex-difference myokine study/github/raw files/GTEx_Analysis_v8_Annotations_SubjectPhenotypesDS.txt')
+sex_table = read.delim('GTEx_Analysis_v8_Annotations_SubjectPhenotypesDS.txt')
 sex_table$GTEx_ID = gsub('GTEX-', '', sex_table$SUBJID)
 sex_table$sexMF = ifelse(sex_table$SEX==1, 'M', 'F')
 table(sex_table$sexMF)
