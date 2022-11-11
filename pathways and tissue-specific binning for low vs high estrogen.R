@@ -134,7 +134,7 @@ zz1 = na.omit(zz1)
 table(zz1$est_cat)
 
 pdf(file = paste0('Cumulative Enrichments of all significant cors - tissue_cond normalized.pdf'))
-ggplot(zz1, aes(x=tissue, y=Ssec_score, fill=est_cat)) + theme_classic() + geom_violin(width=0.6) + geom_boxplot(width=0.2, position = position_dodge(width=0.6), alpha=0.3, color='grey') + scale_fill_manual(values=c('darkorange3', 'darkorchid4')) + xlab('') + ylab('Cumulative Enrichments of all significant cors -log(pvalue) - tissue_cond normalized')
+ggplot(zz1, aes(x=tissue, y=Ssec_score, fill=est_cat)) + theme_classic() + geom_violin(width=0.6) + geom_boxplot(width=0.2, position = position_dodge(width=0.6), alpha=0.3, color='grey') + scale_fill_manual(values=c('darkorange3', 'darkorchid4')) + xlab('') + ylab('')
 dev.off()
 
 
@@ -174,7 +174,7 @@ zz1$tissue_cat = paste0(zz1$tissue, '_', zz1$est_cat)
 my_comparisons <- list( unique(zz1$tissue_cat))
 pdf(file = paste0('Cumulative Enrichments for ',pathway_term_set,  ' - all significant cors.pdf'))
 
-g1 = ggplot(zz1, aes(x=tissue, y=Ssec_score, fill=est_cat)) +  geom_violin(width=0.6) + geom_boxplot(width=0.1, position = position_dodge(width=0.6), alpha=0.3, color='grey') + scale_fill_manual(values=c('darkorange3', 'darkorchid4')) + xlab('') + ylab('Cumulative Enrichments of all significant cors -log(pvalue)') + theme(axis.text.x = element_text(angle = 45, vjust = 0.5, hjust=0.5)) + stat_compare_means( method = "wilcox.test") + ggtitle(paste0(pathway_term_set, ' comparison by estrogen signaling category')) +  theme(axis.line.x.bottom = element_line(color = "black"), axis.line.y.left = element_line(color = "black"), panel.background = element_rect(fill = "white", color = "white"))
+g1 = ggplot(zz1, aes(x=tissue, y=Ssec_score, fill=est_cat)) +  geom_violin(width=0.6) + geom_boxplot(width=0.1, position = position_dodge(width=0.6), alpha=0.3, color='grey') + scale_fill_manual(values=c('darkorange3', 'darkorchid4')) + xlab('') + ylab('') + theme(axis.text.x = element_text(angle = 45, vjust = 0.5, hjust=0.5)) + stat_compare_means( method = "wilcox.test") + ggtitle(paste0(pathway_term_set, ' comparison by estrogen signaling category')) +  theme(axis.line.x.bottom = element_line(color = "black"), axis.line.y.left = element_line(color = "black"), panel.background = element_rect(fill = "white", color = "white"))
 print(g1)
 dev.off()
 
@@ -200,7 +200,7 @@ zz1$tissue_cat = paste0(zz1$tissue, '_', zz1$est_cat)
 my_comparisons <- list( unique(zz1$tissue_cat))
 pdf(file = paste0('Cumulative Enrichments for ',pathway_term_set,  ' - all significant cors.pdf'))
 
-g1 = ggplot(zz1, aes(x=tissue, y=Ssec_score, fill=est_cat)) + theme_classic() + geom_violin(width=0.6) + geom_boxplot(width=0.1, position = position_dodge(width=0.6), alpha=0.3, color='grey') + scale_fill_manual(values=c('darkorange3', 'darkorchid4')) + xlab('') + ylab('Cumulative Enrichments of all significant cors -log(pvalue)') + theme(axis.text.x = element_text(angle = 45, vjust = 0.5, hjust=0.5)) + stat_compare_means( method = "wilcox.test") + ggtitle(paste0(pathway_term_set, ' comparison by estrogen signaling category') )
+g1 = ggplot(zz1, aes(x=tissue, y=Ssec_score, fill=est_cat)) + theme_classic() + geom_violin(width=0.6) + geom_boxplot(width=0.1, position = position_dodge(width=0.6), alpha=0.3, color='grey') + scale_fill_manual(values=c('darkorange3', 'darkorchid4')) + xlab('') + ylab('') + theme(axis.text.x = element_text(angle = 45, vjust = 0.5, hjust=0.5)) + stat_compare_means( method = "wilcox.test") + ggtitle(paste0(pathway_term_set, ' comparison by estrogen signaling category') )
 print(g1)
 dev.off()
 
