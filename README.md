@@ -1,5 +1,5 @@
 # sex-specific-endocrine-signals
-## This repository provides a detailed walk-through and Scripts for GTEx integration work contributing to Massa et al., 2022
+## This repository provides a detailed walk-through and scripts for GTEx integration work contributing to Massa et al., 2022
 ### All datasets for analyses are available here: https://drive.google.com/drive/folders/1FldQDp-I9NGqgBo0cW9WS3KuYCSeHDM7?usp=sharing
 ### Briefly, datasets include:
 #### 1. Gene sets annotated to be involved in estrogen signaling: GSEA estrogen gene set.csv
