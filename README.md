@@ -26,4 +26,4 @@
 
 ## The scripts to analyze are broken up into two parts:
 #### 1: Computation of estrogen signaling proxies per individual in GTEx to infer "low" vs "high" estrogen action: estrogen gene set across tissues.R
-#### 2: Crosstissue correlation scores from Adipose, Skeletal Muscle and Stomach to Hypothalamus female-specific DEGs derived from mice: pathways and tissue-specific binning for low vs high estrogen.R
+#### 2: Crosstissue correlation scores from Adipose, Skeletal Muscle and Stomach to Hypothalamus sex-specific DEGs derived from mice: pathways and tissue-specific binning for low vs high estrogen.R
