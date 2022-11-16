@@ -23,8 +23,6 @@ working_dataset=GTEx_subfiltered
 row.names(working_dataset) = working_dataset$gene_tissue
 working_dataset$gene_tissue=NULL
 working_dataset = as.data.frame(t(working_dataset))
-test1 = working_dataset[,grepl('ITIH5', colnames(working_dataset))]
-colnames(test1)
 
 mm1 = as.data.frame(colnames(working_dataset))
 colnames(mm1) = 'gene_tissue'
@@ -44,7 +42,7 @@ new_working = working_dataset[,colnames(working_dataset) %in% mm1$gene_tissue]
 #rowsum_logp
 #Now crosstissue - female high estr
 gg1 = 'female biased cumulative significance - focused tissue set'
-male_biased = deg_table[deg_table$LogFC>0 & deg_table$adjP<0.05,]
+male_biased = deg_table[deg_table$adjP<0.05,]
 
 tissue_list = c('Adipose - Subcutaneous', 'Adipose - Visceral (Omentum)', 'Muscle - Skeletal', 'Stomach')
 
@@ -136,7 +134,7 @@ zz1 = na.omit(zz1)
 table(zz1$est_cat)
 
 pdf(file = paste0('Cumulative Enrichments of all significant cors - tissue_cond normalized.pdf'))
-ggplot(zz1, aes(x=tissue, y=Ssec_score, fill=est_cat)) + theme_classic() + geom_violin(width=0.6) + geom_boxplot(width=0.2, position = position_dodge(width=0.6), alpha=0.3, color='grey') + scale_fill_manual(values=c('darkorange3', 'darkorchid4')) + xlab('') + ylab('Cumulative Enrichments of all significant cors -log(pvalue) - tissue_cond normalized')
+ggplot(zz1, aes(x=tissue, y=Ssec_score, fill=est_cat)) + theme_classic() + geom_violin(width=0.6) + geom_boxplot(width=0.2, position = position_dodge(width=0.6), alpha=0.3, color='grey') + scale_fill_manual(values=c('darkorange3', 'darkorchid4')) + xlab('') + ylab('')
 dev.off()
 
 
@@ -161,7 +159,6 @@ path_plots = function(pathway_term_set) {
 #path_term = 'ligand'
 tt2 = pathway_annots[grepl(pathway_term_set, pathway_annots$Gene.ontology..biological.process.),]
 tt2 = na.omit(tt2)
-#zz1 = ful_scores1[ful_scores1$Sig_P1e2=='Significant',]
 zz1 = ful_scores1[ful_scores1$gene_symbol %in% tt2$Gene.names,]
 zz1 = na.omit(zz1)
 table(zz1$est_cat)
@@ -177,7 +174,7 @@ zz1$tissue_cat = paste0(zz1$tissue, '_', zz1$est_cat)
 my_comparisons <- list( unique(zz1$tissue_cat))
 pdf(file = paste0('Cumulative Enrichments for ',pathway_term_set,  ' - all significant cors.pdf'))
 
-g1 = ggplot(zz1, aes(x=tissue, y=Ssec_score, fill=est_cat)) +  geom_violin(width=0.6) + geom_boxplot(width=0.1, position = position_dodge(width=0.6), alpha=0.3, color='grey') + scale_fill_manual(values=c('darkorange3', 'darkorchid4')) + xlab('') + ylab('Cumulative Enrichments of all significant cors -log(pvalue)') + theme(axis.text.x = element_text(angle = 45, vjust = 0.5, hjust=0.5)) + stat_compare_means( method = "wilcox.test") + ggtitle(paste0(pathway_term_set, ' comparison by estrogen signaling category')) +  theme(axis.line.x.bottom = element_line(color = "black"), axis.line.y.left = element_line(color = "black"), panel.background = element_rect(fill = "white", color = "white"))
+g1 = ggplot(zz1, aes(x=tissue, y=Ssec_score, fill=est_cat)) +  geom_violin(width=0.6) + geom_boxplot(width=0.1, position = position_dodge(width=0.6), alpha=0.3, color='grey') + scale_fill_manual(values=c('darkorange3', 'darkorchid4')) + xlab('') + ylab('') + theme(axis.text.x = element_text(angle = 45, vjust = 0.5, hjust=0.5)) + stat_compare_means( method = "wilcox.test") + ggtitle(paste0(pathway_term_set, ' comparison by estrogen signaling category')) +  theme(axis.line.x.bottom = element_line(color = "black"), axis.line.y.left = element_line(color = "black"), panel.background = element_rect(fill = "white", color = "white"))
 print(g1)
 dev.off()
 
@@ -203,66 +200,7 @@ zz1$tissue_cat = paste0(zz1$tissue, '_', zz1$est_cat)
 my_comparisons <- list( unique(zz1$tissue_cat))
 pdf(file = paste0('Cumulative Enrichments for ',pathway_term_set,  ' - all significant cors.pdf'))
 
-g1 = ggplot(zz1, aes(x=tissue, y=Ssec_score, fill=est_cat)) + theme_classic() + geom_violin(width=0.6) + geom_boxplot(width=0.1, position = position_dodge(width=0.6), alpha=0.3, color='grey') + scale_fill_manual(values=c('darkorange3', 'darkorchid4')) + xlab('') + ylab('Cumulative Enrichments of all significant cors -log(pvalue)') + theme(axis.text.x = element_text(angle = 45, vjust = 0.5, hjust=0.5)) + stat_compare_means( method = "wilcox.test") + ggtitle(paste0(pathway_term_set, ' comparison by estrogen signaling category') )
+g1 = ggplot(zz1, aes(x=tissue, y=Ssec_score, fill=est_cat)) + theme_classic() + geom_violin(width=0.6) + geom_boxplot(width=0.1, position = position_dodge(width=0.6), alpha=0.3, color='grey') + scale_fill_manual(values=c('darkorange3', 'darkorchid4')) + xlab('') + ylab('') + theme(axis.text.x = element_text(angle = 45, vjust = 0.5, hjust=0.5)) + stat_compare_means( method = "wilcox.test") + ggtitle(paste0(pathway_term_set, ' comparison by estrogen signaling category') )
 print(g1)
 dev.off()
 
-
-
-####################################################################################################################
-#seperate tissues
-path_plots = function(pathway_term_set) {
-  #path_term = 'ligand'
-  tt2 = pathway_annots[grepl(pathway_term_set, pathway_annots$Gene.ontology..biological.process.),]
-  tt2 = na.omit(tt2)
-  #zz1 = ful_scores1[ful_scores1$Sig_P1e2=='Significant',]
-  zz1 = ful_scores1[ful_scores1$gene_symbol %in% tt2$Gene.names,]
-  zz1 = na.omit(zz1)
-  table(zz1$est_cat)
-  zz1$est_cat = factor(zz1$est_cat, levels=c('low_estrogen','high_estrogen'))
-  table(zz1$tissue)
-  
-  #add significance to the graph, scripts adopted from:
-  #http://www.sthda.com/english/articles/24-ggpubr-publication-ready-plots/76-add-p-values-and-significance-levels-to-ggplots/
-  
-  #zz1$tissue= gsub('Adipose - Visceral (Omentum)', 'Adipose', zz1$tissue, fixed = T)
-  #zz1$tissue= gsub('Adipose - Subcutaneous', 'Adipose', zz1$tissue, fixed = T)
-  
-  
-  head(zz1)
-  zz1$tissue_cat = paste0(zz1$tissue, '_', zz1$est_cat)
-  my_comparisons <- list( unique(zz1$tissue_cat))
-  pdf(file = paste0('Cumulative Enrichments for ',pathway_term_set,  ' - all significant cors adipsoe seperate.pdf'))
-  
-  g1 = ggplot(zz1, aes(x=tissue, y=Ssec_score, fill=est_cat)) +  geom_violin(width=0.6) + geom_boxplot(width=0.1, position = position_dodge(width=0.6), alpha=0.3, color='grey') + scale_fill_manual(values=c('darkorange3', 'darkorchid4')) + xlab('') + ylab('Cumulative Enrichments of all significant cors -log(pvalue)') + theme(axis.text.x = element_text(angle = 45, vjust = 0.5, hjust=0.5)) + stat_compare_means( method = "wilcox.test") + ggtitle(paste0(pathway_term_set, ' comparison by estrogen signaling category')) +  theme(axis.line.x.bottom = element_line(color = "black"), axis.line.y.left = element_line(color = "black"), panel.background = element_rect(fill = "white", color = "white"))
-  print(g1)
-  dev.off()
-  
-}
-path_plots('peptide hormone')
-path_plots('feeding behavior')
-path_plots('ligand')
-
-
-pathway_term_set = 'All secreted proteins'
-zz1 = ful_scores1[ful_scores1$gene_symbol %in% Secreted_proteins$`Gene names  (primary )`,]
-zz1 = na.omit(zz1)
-table(zz1$est_cat)
-zz1$est_cat = factor(zz1$est_cat, levels=c('low_estrogen','high_estrogen'))
-table(zz1$tissue)
-
-#add significance to the graph, scripts adopted from:
-#http://www.sthda.com/english/articles/24-ggpubr-publication-ready-plots/76-add-p-values-and-significance-levels-to-ggplots/
-
-#zz1$tissue= gsub('Adipose - Visceral (Omentum)', 'Adipose', zz1$tissue, fixed = T)
-#zz1$tissue= gsub('Adipose - Subcutaneous', 'Adipose', zz1$tissue, fixed = T)
-
-
-head(zz1)
-zz1$tissue_cat = paste0(zz1$tissue, '_', zz1$est_cat)
-my_comparisons <- list( unique(zz1$tissue_cat))
-pdf(file = paste0('Cumulative Enrichments for ',pathway_term_set,  ' - all significant cors adipsoe seperate.pdf'))
-
-g1 = ggplot(zz1, aes(x=tissue, y=Ssec_score, fill=est_cat)) + theme_classic() + geom_violin(width=0.6) + geom_boxplot(width=0.1, position = position_dodge(width=0.6), alpha=0.3, color='grey') + scale_fill_manual(values=c('darkorange3', 'darkorchid4')) + xlab('') + ylab('Cumulative Enrichments of all significant cors -log(pvalue)') + theme(axis.text.x = element_text(angle = 45, vjust = 0.5, hjust=0.5)) + stat_compare_means( method = "wilcox.test") + ggtitle(paste0(pathway_term_set, ' comparison by estrogen signaling category') )
-print(g1)
-dev.off()
