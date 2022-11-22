@@ -1,10 +1,10 @@
 setwd('')  # Set directory where preprocessed files are stored
 load('datasets used/GTEx NA included env.RData')
 
-deg_table = read.csv('hypothalamus DEGs FoverM.csv')
-orths = read.delim('ms_human_orthology.txt')
+deg_table = read.csv('datasets used/hypothalamus DEGs FoverM.csv')
+orths = read.delim('datasets used/ms_human_orthology.txt')
 sex_annots = read.csv('GTEx Subject IDs with estrogen annots.csv')
-Secreted_proteins <- read.delim("uniprot-secreted-filtered-organism__Homo+sapiens+(Human)+[9606]_.tab", header = T, check.names = F)
+Secreted_proteins <- read.delim("datasets used/uniprot-secreted-filtered-organism__Homo+sapiens+(Human)+[9606]_.tab", header = T, check.names = F)
 
 orth_table =  orths[orths$Common.Organism.Name =='mouse, laboratory',]
 sse2 = orths[orths$Common.Organism.Name =='human',]
