@@ -143,14 +143,6 @@ write.csv(zz1, file ='crosstissue enrichments only sig genes.csv')
 zz1 = ful_scores1[ful_scores1$Sig_P1e2=='Significant',]
 zz1 = na.omit(zz1)
 
-library(reshape2)
-nn2 = dcast(zz1,gene_tissue ~ est_cat, value.var = 'Ssec_score', fun.aggregate = mean, na.rm=T)
-nn2 = na.omit(nn2)
-bb1 = bicorAndPvalue(nn2$high_estrogen, nn2$low_estrogen, use = 'p')
-pdf(file = 'cumulative enrichments significant high vs low estrogen scatterplot.pdf')
-ggplot(nn2, aes(x=high_estrogen, y=low_estrogen)) + geom_point() + theme_classic() + xlab('High Estrogen Ssec score') + ylab('Low Estrogen Ssec score') + ggtitle('High vs Low Estrogen Ssec correlations, bicor = -0.32, pvalue=0.0023')
-dev.off()
-
 ############################################################
 #run for specific pathways
 
