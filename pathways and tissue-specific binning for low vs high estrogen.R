@@ -1,5 +1,5 @@
-setwd('')
-load('GTEx NA included env.RData')
+setwd('')  # Set directory where preprocessed files are stored
+load('datasets used/GTEx NA included env.RData')
 
 deg_table = read.csv('hypothalamus DEGs FoverM.csv')
 orths = read.delim('ms_human_orthology.txt')
