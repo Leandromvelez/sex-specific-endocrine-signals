@@ -1,4 +1,4 @@
-setwd('')  # Set directory where preprocessed files are stored
+setwd('')  # Set directory where datasets and files needed are stored
 load('datasets used/GTEx NA included env.RData')
 
 deg_table = read.csv('datasets used/hypothalamus DEGs FoverM.csv')
