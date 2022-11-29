@@ -1,10 +1,13 @@
-setwd('')  # Set directory where datasets and files needed are stored
+setwd('') # Set working directory where all files are stored
 load('datasets used/GTEx NA included env.RData')
 
 deg_table = read.csv('datasets used/hypothalamus DEGs FoverM.csv')
 orths = read.delim('datasets used/ms_human_orthology.txt')
-sex_annots = read.csv('GTEx Subject IDs with estrogen annots.csv')
+sex_annots = read.csv('datasets used/GTEx Subject IDs with estrogen annots.csv')
+
+# Load filtered list of human secreted proteins
 Secreted_proteins <- read.delim("datasets used/uniprot-secreted-filtered-organism__Homo+sapiens+(Human)+[9606]_.tab", header = T, check.names = F)
+
 
 orth_table =  orths[orths$Common.Organism.Name =='mouse, laboratory',]
 sse2 = orths[orths$Common.Organism.Name =='human',]
@@ -38,10 +41,10 @@ new_working = working_dataset[,colnames(working_dataset) %in% mm1$gene_tissue]
 
 
 ##########################################################################################
-#start here for patthways
-#rowsum_logp
+#start here for pathhways
+
 #Now crosstissue - female high estr
-gg1 = 'female biased cumulative significance - focused tissue set'
+
 male_biased = deg_table[deg_table$adjP<0.05,]
 
 tissue_list = c('Adipose - Subcutaneous', 'Adipose - Visceral (Omentum)', 'Muscle - Skeletal', 'Stomach')
@@ -54,12 +57,14 @@ working_1 = new_working[row.names(new_working) %in% ind_list$GTEx_ID,]
 origin = working_1[,colnames(working_1) %in% mm3$gene_tissue]
 targets = working_1[,colnames(working_1) %in% mm2$gene_tissue]
 
+### Obtain bicor and p values
 tissue.tissue.p = bicorAndPvalue(origin, targets, use='pairwise.complete.obs')
 
 tt1 = tissue.tissue.p$p
 tt1[is.na(tt1)] = 0.5
 tt1[tt1==0] = 0.5
 cc3 = as.data.frame(rowMeans(-log10(tt1)))
+
 
 colnames(cc3) = 'Ssec_score'
 cc3$gene_tissue = row.names(cc3)
@@ -89,6 +94,8 @@ tt1 = tissue.tissue.p$p
 tt1[is.na(tt1)] = 0.5
 tt1[tt1==0] = 0.5
 cc3 = as.data.frame(rowMeans(-log10(tt1)))
+
+table(tt1[tt1==0.5])
 
 colnames(cc3) = 'Ssec_score'
 cc3$gene_tissue = row.names(cc3)
@@ -146,31 +153,31 @@ zz1 = na.omit(zz1)
 ############################################################
 #run for specific pathways
 
-pathway_annots = read.delim('uniprot-human-genes and goterms mapping.tab')
+pathway_annots = read.delim('datasets used/uniprot-human-genes and goterms mapping.tab')
 path_plots = function(pathway_term_set) {
-#path_term = 'ligand'
-tt2 = pathway_annots[grepl(pathway_term_set, pathway_annots$Gene.ontology..biological.process.),]
-tt2 = na.omit(tt2)
-zz1 = ful_scores1[ful_scores1$gene_symbol %in% tt2$Gene.names,]
-zz1 = na.omit(zz1)
-table(zz1$est_cat)
-zz1$est_cat = factor(zz1$est_cat, levels=c('low_estrogen','high_estrogen'))
-table(zz1$tissue)
-
-zz1$tissue= gsub('Adipose - Visceral (Omentum)', 'Adipose', zz1$tissue, fixed = T)
-zz1$tissue= gsub('Adipose - Subcutaneous', 'Adipose', zz1$tissue, fixed = T)
-
-
-head(zz1)
-zz1$tissue_cat = paste0(zz1$tissue, '_', zz1$est_cat)
-my_comparisons <- list( unique(zz1$tissue_cat))
-pdf(file = paste0('Cumulative Enrichments for ',pathway_term_set,  ' - all significant cors.pdf'))
-
-g1 = ggplot(zz1, aes(x=tissue, y=Ssec_score, fill=est_cat)) +  geom_violin(width=0.6) + geom_boxplot(width=0.1, position = position_dodge(width=0.6), alpha=0.3, color='grey') + scale_fill_manual(values=c('darkorange3', 'darkorchid4')) + xlab('') + ylab('') + theme(axis.text.x = element_text(angle = 45, vjust = 0.5, hjust=0.5)) + stat_compare_means( method = "wilcox.test") + ggtitle(paste0(pathway_term_set, ' comparison by estrogen signaling category')) +  theme(axis.line.x.bottom = element_line(color = "black"), axis.line.y.left = element_line(color = "black"), panel.background = element_rect(fill = "white", color = "white"))
-print(g1)
-dev.off()
-
-}
+  #path_term = 'ligand'
+  tt2 = pathway_annots[grepl(pathway_term_set, pathway_annots$Gene.ontology..biological.process.),]
+  tt2 = na.omit(tt2)
+  zz1 = ful_scores1[ful_scores1$gene_symbol %in% tt2$Gene.names,]
+  zz1 = na.omit(zz1)
+  table(zz1$est_cat)
+  zz1$est_cat = factor(zz1$est_cat, levels=c('low_estrogen','high_estrogen'))
+  table(zz1$tissue)
+  
+  zz1$tissue= gsub('Adipose - Visceral (Omentum)', 'Adipose', zz1$tissue, fixed = T)
+  zz1$tissue= gsub('Adipose - Subcutaneous', 'Adipose', zz1$tissue, fixed = T)
+  
+  
+  head(zz1)
+  zz1$tissue_cat = paste0(zz1$tissue, '_', zz1$est_cat)
+  my_comparisons <- list( unique(zz1$tissue_cat))
+  pdf(file = paste0('Cumulative Enrichments for ',pathway_term_set,  ' - all significant cors.pdf'))
+  
+  g1 = ggplot(zz1, aes(x=tissue, y=Ssec_score, fill=est_cat)) +  geom_violin(width=0.6) + geom_boxplot(width=0.1, position = position_dodge(width=0.6), alpha=0.3, color='grey') + scale_fill_manual(values=c('darkorange3', 'darkorchid4')) + xlab('') + ylab('') + theme(axis.text.x = element_text(angle = 45, vjust = 0.5, hjust=0.5)) + stat_compare_means( method = "wilcox.test") + ggtitle(paste0(pathway_term_set, ' comparison by estrogen signaling category')) +  theme(axis.line.x.bottom = element_line(color = "black"), axis.line.y.left = element_line(color = "black"), panel.background = element_rect(fill = "white", color = "white"))
+  print(g1)
+  dev.off()
+  
+} ## Following plots are going to be created as pdf's in the working directory
 path_plots('peptide hormone')
 path_plots('feeding behavior')
 path_plots('ligand')
