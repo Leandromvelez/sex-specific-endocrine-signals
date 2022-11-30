@@ -38,7 +38,7 @@ new_working = working_dataset[,colnames(working_dataset) %in% mm1$gene_tissue]
 
 
 ##########################################################################################
-#start here for patthways
+#start here for pathways
 #rowsum_logp
 #Now crosstissue - female high estr
 gg1 = 'female biased cumulative significance - focused tissue set'
@@ -166,7 +166,7 @@ zz1$tissue_cat = paste0(zz1$tissue, '_', zz1$est_cat)
 my_comparisons <- list( unique(zz1$tissue_cat))
 pdf(file = paste0('Cumulative Enrichments for ',pathway_term_set,  ' - all significant cors.pdf'))
 
-g1 = ggplot(zz1, aes(x=tissue, y=Ssec_score, fill=est_cat)) +  geom_violin(width=0.6) + geom_boxplot(width=0.1, position = position_dodge(width=0.6), alpha=0.3, color='grey') + scale_fill_manual(values=c('darkorange3', 'darkorchid4')) + xlab('') + ylab('') + theme(axis.text.x = element_text(angle = 45, vjust = 0.5, hjust=0.5)) + stat_compare_means( method = "wilcox.test") + ggtitle(paste0(pathway_term_set, ' comparison by estrogen signaling category')) +  theme(axis.line.x.bottom = element_line(color = "black"), axis.line.y.left = element_line(color = "black"), panel.background = element_rect(fill = "white", color = "white"))
+g1 = ggplot(zz1, aes(x=tissue, y=Ssec_score, fill=est_cat)) +  geom_violin(width=0.6) + geom_boxplot(width=0.1, position = position_dodge(width=0.6), alpha=0.3, color='grey') + scale_fill_manual(values=c('darkorange3', 'darkorchid4')) + xlab('') + ylab('') + theme(axis.text.x = element_text(angle = 45, vjust = 0.5, hjust=0.5)) + stat_compare_means() + ggtitle(paste0(pathway_term_set, ' comparison by estrogen signaling category')) +  theme(axis.line.x.bottom = element_line(color = "black"), axis.line.y.left = element_line(color = "black"), panel.background = element_rect(fill = "white", color = "white"))
 print(g1)
 dev.off()
 
@@ -192,7 +192,31 @@ zz1$tissue_cat = paste0(zz1$tissue, '_', zz1$est_cat)
 my_comparisons <- list( unique(zz1$tissue_cat))
 pdf(file = paste0('Cumulative Enrichments for ',pathway_term_set,  ' - all significant cors.pdf'))
 
-g1 = ggplot(zz1, aes(x=tissue, y=Ssec_score, fill=est_cat)) + theme_classic() + geom_violin(width=0.6) + geom_boxplot(width=0.1, position = position_dodge(width=0.6), alpha=0.3, color='grey') + scale_fill_manual(values=c('darkorange3', 'darkorchid4')) + xlab('') + ylab('') + theme(axis.text.x = element_text(angle = 45, vjust = 0.5, hjust=0.5)) + stat_compare_means( method = "wilcox.test") + ggtitle(paste0(pathway_term_set, ' comparison by estrogen signaling category') )
+g1 = ggplot(zz1, aes(x=tissue, y=Ssec_score, fill=est_cat)) + theme_classic() + geom_violin(width=0.6) + geom_boxplot(width=0.1, position = position_dodge(width=0.6), alpha=0.3, color='grey') + scale_fill_manual(values=c('darkorange3', 'darkorchid4')) + xlab('') + ylab('') + theme(axis.text.x = element_text(angle = 45, vjust = 0.5, hjust=0.5)) + stat_compare_means() + ggtitle(paste0(pathway_term_set, ' comparison by estrogen signaling category') )
 print(g1)
 dev.off()
 
+
+#####################################################################
+####################################################################################################################calculate interaction term for given pathways
+pathway_term_set = 'feeding behavior'
+tt2 = pathway_annots[grepl(pathway_term_set, pathway_annots$Gene.ontology..biological.process.),]
+tt2 = na.omit(tt2)
+
+#toggle here for all secreted proteins
+#zz1 = ful_scores1[ful_scores1$gene_symbol %in% Secreted_proteins$`Gene names  (primary )`,]
+zz1 = ful_scores1[ful_scores1$gene_symbol %in% tt2$Gene.names...primary..,]
+
+zz1 = na.omit(zz1)
+table(zz1$est_cat)
+zz1$est_cat = factor(zz1$est_cat, levels=c('low_estrogen','high_estrogen'))
+table(zz1$tissue)
+
+zz1$tissue= gsub('Adipose - Visceral (Omentum)', 'Adipose', zz1$tissue, fixed = T)
+zz1$tissue= gsub('Adipose - Subcutaneous', 'Adipose', zz1$tissue, fixed = T)
+
+
+zz1$tissue_cat = paste0(zz1$tissue, '_', zz1$est_cat)
+my_comparisons <- list( unique(zz1$tissue_cat))
+interAB<-interaction(zz1$est_cat, zz1$tissue)
+kw_test = kruskal.test(Ssec_score ~ interAB, data = zz1)
