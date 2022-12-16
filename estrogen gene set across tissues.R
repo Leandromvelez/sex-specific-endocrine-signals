@@ -2,28 +2,29 @@
 setwd('')
 estrogen_set = read.csv('datasets used/GSEA estrogen gene set.csv', check.names = F)
 colnames(estrogen_set)= c('original', 'Entrez_id', 'Gene', 'Gene1')
+#Load preprocessed GTEx data
 load('datasets used/GTEx NA included env.RData')
 GTEx_full=NULL
 library(dplyr)
 library(reshape2)
-
 library(pheatmap)
 working_dataset=GTEx_subfiltered
 GTEx_subfiltered = NULL
 row.names(working_dataset) = working_dataset$gene_tissue
 working_dataset$gene_tissue=NULL
 working_dataset = as.data.frame(t(working_dataset))
-
+# load male-female GTEx metadata
 sex_table = read.delim('datasets used/GTEx_Analysis_v8_Annotations_SubjectPhenotypesDS.txt')
 sex_table$GTEx_ID = gsub('GTEX-', '', sex_table$SUBJID)
 sex_table$sexMF = ifelse(sex_table$SEX==1, 'M', 'F')
 table(sex_table$sexMF)
+# Keep only metadata samples matching the ones in working dataset
 new_trts = sex_table[sex_table$GTEx_ID %in% row.names(working_dataset),]
 table(new_trts$sexMF)
+#make a list of estrogen gene set
 est_genes = estrogen_set$Gene
-
+# reshape working dataset to a long format
 gg1 = reshape2::melt(as.matrix(working_dataset))
-
 head(gg1)
 colnames(gg1) = c('ID', 'gene_tissue', 'value')
 gg1$gene_symbol = gsub("\\_.*","",gg1$gene_tissue)
@@ -31,6 +32,7 @@ gg1$gene_symbol[1:5]
 gg1 = gg1[gg1$gene_symbol %in% est_genes,]
 gg1$tissue = gsub(".*_","",gg1$gene_tissue)
 
+#subsetting male and female working datasets
 mm1 = gg1[gg1$ID %in% new_trts$GTEx_ID[new_trts$sexMF=='M'],]
 ff1 = gg1[gg1$ID %in% new_trts$GTEx_ID[new_trts$sexMF=='F'],]
 gg1=NULL
