@@ -1,15 +1,20 @@
+# Set working directory (setwd) where preprocessed files are saved
 setwd('')
-estrogen_set = read.csv('GSEA estrogen gene set.csv')
-load('GTEx NA included env.RData')
+estrogen_set = read.csv('datasets used/GSEA estrogen gene set.csv', check.names = F)
+colnames(estrogen_set)= c('original', 'Entrez_id', 'Gene', 'Gene1')
+load('datasets used/GTEx NA included env.RData')
+GTEx_full=NULL
 library(dplyr)
 library(reshape2)
+
 library(pheatmap)
 working_dataset=GTEx_subfiltered
+GTEx_subfiltered = NULL
 row.names(working_dataset) = working_dataset$gene_tissue
 working_dataset$gene_tissue=NULL
 working_dataset = as.data.frame(t(working_dataset))
 
-sex_table = read.delim('GTEx_Analysis_v8_Annotations_SubjectPhenotypesDS.txt')
+sex_table = read.delim('datasets used/GTEx_Analysis_v8_Annotations_SubjectPhenotypesDS.txt')
 sex_table$GTEx_ID = gsub('GTEX-', '', sex_table$SUBJID)
 sex_table$sexMF = ifelse(sex_table$SEX==1, 'M', 'F')
 table(sex_table$sexMF)
@@ -28,6 +33,7 @@ gg1$tissue = gsub(".*_","",gg1$gene_tissue)
 
 mm1 = gg1[gg1$ID %in% new_trts$GTEx_ID[new_trts$sexMF=='M'],]
 ff1 = gg1[gg1$ID %in% new_trts$GTEx_ID[new_trts$sexMF=='F'],]
+gg1=NULL
 library(RColorBrewer)
 
 test = mm1 %>% dplyr::select(gene_symbol, tissue, value) %>% 
@@ -152,7 +158,7 @@ males1 = test
 cc1 = males1 %>% dplyr::select(gene_symbol, tissue, z_score) %>% dplyr::group_by(gene_symbol, tissue) %>% dplyr::summarise(avg=mean(z_score, na.rm=T))
 head(cc1)
 pdf(file = 'distribution of z-scores of estrogen genes (females).pdf')
-hist(cc1$avg, main= 'distribution of row z-score - estrogen genes (males)', col = 'darkorange3')
+hist(cc1$avg, main= 'distribution of row z-score - estrogen genes (females)', col = 'darkorange3')
 abline(v=threshold, col= 'dodgerblue', lty=c(4), lwd=c(6))
 dev.off()
 
@@ -177,9 +183,7 @@ ind_list$final_expr_cat = ifelse(ind_list$High_expr > ind_list$Low_expr, 'High_e
 female_estro_annots = ind_list
 
 
-sex_table = read.delim('GTEx_Analysis_v8_Annotations_SubjectPhenotypesDS.txt')
-sex_table$GTEx_ID = gsub('GTEX-', '', sex_table$SUBJID)
-sex_table$sexMF = ifelse(sex_table$SEX==1, 'M', 'F')
+
 table(sex_table$sexMF)
 new_trts = sex_table[sex_table$GTEx_ID %in% row.names(working_dataset),]
 table(new_trts$sexMF)
@@ -188,9 +192,9 @@ head(males)
 males$estrogen_cutoff = male_estro_annots$final_expr_cat[match(males$GTEx_ID, male_estro_annots$ID)]
 table(males$estrogen_cutoff)
 
-females = new_trts[!new_trts$sexMF=='M',]
+females = new_trts[new_trts$sexMF=='F',]
 females$estrogen_cutoff = female_estro_annots$final_expr_cat[match(females$GTEx_ID, female_estro_annots$ID)]
 head(females)
 new_sex_table = as.data.frame(rbind(males, females))
-table(new_sex_table$estrogen_cutoff)
+table(females$estrogen_cutoff)
 write.csv(new_sex_table, file = 'GTEx Subject IDs with estrogen annots.csv', row.names = F)
