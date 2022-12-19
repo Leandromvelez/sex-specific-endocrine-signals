@@ -1,3 +1,4 @@
+
 # Set working directory (setwd) where preprocessed files are saved
 setwd('')
 estrogen_set = read.csv('datasets used/GSEA estrogen gene set.csv', check.names = F)
@@ -52,6 +53,7 @@ m2[is.na(m2)] = 0
 range(m2)
 breaksList = seq(min(m2), max(m2), by = (max(m2)-min(m2))/1000)
 m2 = na.omit(m2)
+# Heatmap Z scores estrogen genes x tissues, males GTEx
 pdf(file = 'male counts of estrogen genes across tissues.pdf')
 pheatmap(m2, color = colorRampPalette(brewer.pal(n = 7, name = "GnBu"))(length(breaksList)), breaks = breaksList, main='male counts of estrogen genes across tissues - row Z-score', fontsize_row = 1, fontsize_col = 2)
 dev.off()
@@ -70,6 +72,7 @@ m2[is.na(m2)] = 0
 range(m2)
 breaksList = seq(min(m2), max(m2), by = (max(m2)-min(m2))/1000)
 m2 = na.omit(m2)
+# Heatmap Z scores estrogen genes x tissues, females GTEx
 pdf(file = 'Female counts of estrogen genes across tissues.pdf')
 pheatmap(m2, color = colorRampPalette(brewer.pal(n = 7, name = "GnBu"))(length(breaksList)), breaks = breaksList, main='Female counts of estrogen genes across tissues - row Z-score', fontsize_row = 1, fontsize_col = 2)
 dev.off()
@@ -93,6 +96,7 @@ m2[is.na(m2)] = 0
 range(m2)
 breaksList = seq(min(m2), max(m2), by = (max(m2)-min(m2))/1000)
 m2 = na.omit(m2)
+# Heatmap Z scores estrogen genes x filtered tissues list, males GTEx
 pdf(file = 'male counts of estrogen genes across tissues - filtered list.pdf')
 pheatmap(m2, color = colorRampPalette(brewer.pal(n = 7, name = "GnBu"))(length(breaksList)), breaks = breaksList, main='male counts of estrogen genes across tissues - row Z-score filtered list', fontsize_row = 1, fontsize_col = 2)
 dev.off()
@@ -110,12 +114,13 @@ m2[is.na(m2)] = 0
 range(m2)
 breaksList = seq(min(m2), max(m2), by = (max(m2)-min(m2))/1000)
 m2 = na.omit(m2)
+# Heatmap Z scores estrogen genes x filtered tissues list, females GTEx
 pdf(file = 'Female counts of estrogen genes across tissues - filtered list.pdf')
 pheatmap(m2, color = colorRampPalette(brewer.pal(n = 7, name = "GnBu"))(length(breaksList)), breaks = breaksList, main='Female counts of estrogen genes across tissues - row Z-score filtered list', fontsize_row = 1, fontsize_col = 2)
 dev.off()
 
 ###################################################################
-#come up with thresholds
+#come up with thresholds for defining samples with High and Low expression of estrogen genes, firts for males then for females
 threshold  = 0
 mm2 = mm1[mm1$tissue %in% tissue_list,]
 test = mm2 %>% dplyr::select(gene_symbol, tissue, value) %>% 
@@ -124,6 +129,7 @@ test = mm2 %>% dplyr::select(gene_symbol, tissue, value) %>%
 males1 = test
 cc1 = males1 %>% dplyr::select(gene_symbol, tissue, z_score) %>% dplyr::group_by(gene_symbol, tissue) %>% dplyr::summarise(avg=mean(z_score, na.rm=T))
 head(cc1)
+# Histogram distribution of Z-scores of estrogen genes in males GTEx
 pdf(file = 'distribution of z-scores of estrogen genes (males).pdf')
 hist(cc1$avg, main= 'distribution of row z-score - estrogen genes (males)', col = 'darkorange3')
 abline(v=threshold, col= 'dodgerblue', lty=c(4), lwd=c(6))
@@ -159,6 +165,7 @@ test = mm2 %>% dplyr::select(gene_symbol, tissue, value) %>%
 males1 = test
 cc1 = males1 %>% dplyr::select(gene_symbol, tissue, z_score) %>% dplyr::group_by(gene_symbol, tissue) %>% dplyr::summarise(avg=mean(z_score, na.rm=T))
 head(cc1)
+# Histogram distribution of Z-scores of estrogen genes in females GTEx
 pdf(file = 'distribution of z-scores of estrogen genes (females).pdf')
 hist(cc1$avg, main= 'distribution of row z-score - estrogen genes (females)', col = 'darkorange3')
 abline(v=threshold, col= 'dodgerblue', lty=c(4), lwd=c(6))
@@ -197,6 +204,6 @@ table(males$estrogen_cutoff)
 females = new_trts[new_trts$sexMF=='F',]
 females$estrogen_cutoff = female_estro_annots$final_expr_cat[match(females$GTEx_ID, female_estro_annots$ID)]
 head(females)
-new_sex_table = as.data.frame(rbind(males, females))
 table(females$estrogen_cutoff)
+new_sex_table = as.data.frame(rbind(males, females))
 write.csv(new_sex_table, file = 'GTEx Subject IDs with estrogen annots.csv', row.names = F)
