@@ -23,6 +23,8 @@ library(ggpubr)
 
 #Extract the dataset which has been filtered
 working_dataset=GTEx_subfiltered
+GTEx_full=NULL
+GTEx_subfiltered = NULL
 row.names(working_dataset) = working_dataset$gene_tissue
 working_dataset$gene_tissue=NULL
 working_dataset = as.data.frame(t(working_dataset))
@@ -36,6 +38,7 @@ brain_tissues = unique(mm1$tissue[grepl('Brain', mm1$tissue)])
 tissue_list = c('Adipose - Subcutaneous', 'Adipose - Visceral (Omentum)', brain_tissues, 'Breast - Mammary Tissue', 'Muscle - Skeletal', 'Ovary', 'Stomach', 'Pituitary', 'Small Intestine - Terminal Ileum', 'Testis', 'Thyroid', 'Uterus', 'Vagina')
 mm1 = mm1[mm1$tissue %in% tissue_list,]
 new_working = working_dataset[,colnames(working_dataset) %in% mm1$gene_tissue]
+working_dataset = NULL
 
 
 
@@ -61,6 +64,7 @@ targets = working_1[,colnames(working_1) %in% mm2$gene_tissue]
 tissue.tissue.p = bicorAndPvalue(origin, targets, use='pairwise.complete.obs')
 
 tt1 = tissue.tissue.p$p
+tissue.tissue.p=NULL
 tt1[is.na(tt1)] = 0.5
 tt1[tt1==0] = 0.5
 cc3 = as.data.frame(rowMeans(-log10(tt1)))
@@ -85,12 +89,14 @@ mm2 = mm1[mm1$gene_symbol %in% male_biased$human_orth,]
 mm2 = mm2[mm2$tissue=='Brain - Hypothalamus',]
 mm3 = mm1[mm1$tissue %in% tissue_list,]
 working_1 = new_working[row.names(new_working) %in% ind_list$GTEx_ID,]
+new_working = NULL
 origin = working_1[,colnames(working_1) %in% mm3$gene_tissue]
 targets = working_1[,colnames(working_1) %in% mm2$gene_tissue]
 
 tissue.tissue.p = bicorAndPvalue(origin, targets, use='pairwise.complete.obs')
 
 tt1 = tissue.tissue.p$p
+tissue.tissue.p=NULL
 tt1[is.na(tt1)] = 0.5
 tt1[tt1==0] = 0.5
 cc3 = as.data.frame(rowMeans(-log10(tt1)))
