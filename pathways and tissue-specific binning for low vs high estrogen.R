@@ -209,3 +209,27 @@ g1 = ggplot(zz1, aes(x=tissue, y=Ssec_score, fill=est_cat)) + theme_classic() + 
 print(g1)
 dev.off()
 
+
+###################################################################################################################
+#calculate interaction term for given pathways
+pathway_term_set = 'feeding behavior'
+tt2 = pathway_annots[grepl(pathway_term_set, pathway_annots$Gene.ontology..biological.process.),]
+tt2 = na.omit(tt2)
+
+#toggle here for all secreted proteins
+#zz1 = ful_scores1[ful_scores1$gene_symbol %in% Secreted_proteins$`Gene names  (primary )`,]
+zz1 = ful_scores1[ful_scores1$gene_symbol %in% tt2$Gene.names...primary..,]
+
+zz1 = na.omit(zz1)
+table(zz1$est_cat)
+zz1$est_cat = factor(zz1$est_cat, levels=c('low_estrogen','high_estrogen'))
+table(zz1$tissue)
+
+zz1$tissue= gsub('Adipose - Visceral (Omentum)', 'Adipose', zz1$tissue, fixed = T)
+zz1$tissue= gsub('Adipose - Subcutaneous', 'Adipose', zz1$tissue, fixed = T)
+
+
+zz1$tissue_cat = paste0(zz1$tissue, '_', zz1$est_cat)
+my_comparisons <- list( unique(zz1$tissue_cat))
+interAB<-interaction(zz1$est_cat, zz1$tissue)
+kw_test = kruskal.test(Ssec_score ~ interAB, data = zz1)
